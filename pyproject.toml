@@ -16,4 +16,6 @@ dependencies = [
     "asyncpg",
     "gigachat",
     "greenlet",
+    "psycopg2>=2.9.11",
+    "psycopg2-binary>=2.9.11",
 ]
