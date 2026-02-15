@@ -17,7 +17,7 @@ di.init()
 async def main():
     load_dotenv()
 
-    init_db()
+    await init_db()
 
     BOT_TOKEN = os.getenv('BOT_TOKEN')
 
@@ -31,8 +31,6 @@ async def main():
 
     print("Бот запускается...")
     await dp.start_polling(bot)
-
-
 
 
 if __name__ == "__main__":

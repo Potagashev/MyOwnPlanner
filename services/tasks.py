@@ -23,7 +23,7 @@ class TaskService:
 
     async def add_task(self, task_text: str) -> dict:
         try:
-            new_task = await self.repo.create_task(text=task_text, status='inbox')
+            new_task = await self.repo.create_task(data={"text": task_text, "status": "inbox"})
             print(f"[DB] Добавлена задача: {task_text} (ID: {new_task.id})")
 
             analysis_result = await self._analyze_task(task_text)
@@ -63,7 +63,7 @@ class TaskService:
         """
 
         try:
-            response = await self.send_prompt(prompt)
+            response = await self.llm_service.send_prompt(prompt)
             response_text = response.strip()
 
             response_text = response_text.replace('```json', '').replace('```', '').strip()

@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import StrEnum
-from pydantic import BaseModel
+from schemas.base_schemas import SchemaBase
 
 
 class TaskStatus(StrEnum):
@@ -9,7 +9,7 @@ class TaskStatus(StrEnum):
     DONE = 'done'
 
 
-class TaskItem(BaseModel):
+class TaskItem(SchemaBase):
     id: int
     text: str
     status: TaskStatus
