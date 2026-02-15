@@ -1,9 +1,12 @@
 from datetime import datetime
 import json
+import logging
 from llm_services.llm_abc import LLMServiceABC
 from repositories.tasks import TaskRepository
 from schemas.tasks import TaskItem
 from settings import Settings
+
+logger = logging.getLogger(__name__)
 
 
 class TaskService:
@@ -24,19 +27,19 @@ class TaskService:
     async def add_task(self, task_text: str) -> dict:
         try:
             new_task = await self.repo.create_task(data={"text": task_text, "status": "inbox"})
-            print(f"[DB] Добавлена задача: {task_text} (ID: {new_task.id})")
+            logger.info(f"[DB] Добавлена задача: {task_text} (ID: {new_task.id})")
 
             analysis_result = await self._analyze_task(task_text)
             analysis_result['ai_analyzed'] = datetime.now()
             await self.repo.update_task(new_task.id, analysis_result)
-            print(f"[AI] Задача проанализирована: {analysis_result}")
+            logger.info(f"[AI] Задача проанализирована: {analysis_result}")
 
             return {
                 "task_id": new_task.id,
                 "analysis": analysis_result
             }
         except Exception as e:
-            print(f"[ERROR] Ошибка при добавлении задачи: {e}")
+            logger.error(f"[ERROR] Ошибка при добавлении задачи: {e}")
             return {"task_id": -1, "analysis": None}
         
     
@@ -74,13 +77,13 @@ class TaskService:
             if all(field in result for field in required_fields):
                 return result
             else:
-                print(f"[LLM WARNING] Не все поля в ответе: {result}")
+                logger.warning(f"[LLM WARNING] Не все поля в ответе: {result}")
                 return {"category": "Другое", "priority": "Средний", "estimated_minutes": 30}
 
         except json.JSONDecodeError as e:
-            print(f"[LLM ERROR] Ошибка парсинга JSON: {e}")
-            print(f"[LLM ERROR] Ответ модели: {response_text}")
+            logger.error(f"[LLM ERROR] Ошибка парсинга JSON: {e}")
+            logger.error(f"[LLM ERROR] Ответ модели: {response_text}")
             return {"category": "Другое", "priority": "Средний", "estimated_minutes": 30}
         except Exception as e:
-            print(f"[LLM ERROR] Ошибка при анализе задачи: {e}")
+            logger.error(f"[LLM ERROR] Ошибка при анализе задачи: {e}")
             return {"category": "Другое", "priority": "Средний", "estimated_minutes": 30}
