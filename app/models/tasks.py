@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
 from datetime import datetime
 
-from models import Base
+from app.models import Base
 
 
 class Task(Base):
@@ -15,3 +15,4 @@ class Task(Base):
     category = Column(String, nullable=True)
     estimated_minutes = Column(Integer, nullable=True)
     ai_analyzed = Column(DateTime, nullable=True)
+    scheduled_for = Column(DateTime, nullable=True)

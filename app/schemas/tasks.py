@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import StrEnum
-from schemas.base_schemas import SchemaBase
+from app.schemas.base_schemas import SchemaBase
 
 
 class TaskStatus(StrEnum):

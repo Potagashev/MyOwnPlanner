@@ -1,8 +1,8 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 
-from bot.enums import CommandEnum
-
+from app.bot.enums import CommandEnum
+from app.di.di_container import di
 
 router = Router()
 
@@ -20,7 +20,6 @@ async def cmd_start(message: types.Message):
 
 @router.message(Command(CommandEnum.ADD))
 async def cmd_add(message: types.Message):
-    from bot_deprecated import di
     service = di.task_service
     task_text = message.text[5:].strip()
 
@@ -48,7 +47,6 @@ async def cmd_add(message: types.Message):
 
 @router.message(Command(CommandEnum.INBOX))
 async def cmd_inbox(message: types.Message):
-    from bot_deprecated import di
     service = di.task_service
     tasks = await service.get_inbox_tasks()
 
@@ -70,16 +68,29 @@ async def cmd_inbox(message: types.Message):
 
     await message.answer(tasks_list)
 
-@router.message(Command(CommandEnum.START))
-async def cmd_start(message: types.Message):
-    user_name = message.from_user.first_name
-    await message.answer(
-        f"Привет, {user_name}! 👋\n"
-        f"Я твой ИИ-планировщик. Вот что я умею:\n"
-        f"/add [задача] - добавить задачу в инбокс\n"
-        f"/inbox - посмотреть задачи в инбоксе\n"
-        f"/plan_today - запланировать задачи на сегодня"
-    )
+
+@router.message(Command(CommandEnum.PLAN_TODAY))
+async def cmd_plan_today(message: types.Message):
+    service = di.task_service
+    tasks = await service.today_tasks()
+
+    if not tasks:
+        await message.answer("📅 План на сегодня пуст!")
+        return
+
+    plan_text = "📅 **План на сегодня:**\n\n"
+    for task in tasks:
+        priority_emoji = {"Высокий": "🔴", "Средний": "🟡", "Низкий": "🟢"}.get(task.priority, "⚪")
+        category_emoji = {"Работа": "💼", "Личное": "👤", "Здоровье": "💪", "Обучение": "📚", "Семья": "👨‍👩‍👧‍👦"}.get(
+            task.category, "📌",
+        )
+        plan_text += (
+            f"• {task.text}\n"
+            f"   {category_emoji} {task.category} | {priority_emoji} {task.priority} | ⏱️ {task.estimated_minutes} мин\n"
+            f"   🆔 {task.id}\n\n"
+        )
+
+    await message.answer(plan_text)
 
 
 @router.message()

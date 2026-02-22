@@ -1,9 +1,9 @@
-from llm_services.llm_abc import LLMServiceABC
-from settings import Settings
+from app.llm_clients.llm_client_abc import LLMClientABC
+from app.settings import Settings
 from gigachat import GigaChat
 
 
-class GigaChatService(LLMServiceABC):
+class GigaChatClient(LLMClientABC):
     def __init__(self, settings: Settings):
         self.settings = settings
         self.model_instance = GigaChat(

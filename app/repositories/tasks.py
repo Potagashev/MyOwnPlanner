@@ -1,7 +1,7 @@
 from sqlalchemy import insert, select, update
-from models.tasks import Task
-from repositories.repo_abc import RepositoryABC
-from schemas.tasks import TaskItem
+from app.models.tasks import Task
+from app.repositories.repo_abc import RepositoryABC
+from app.schemas.tasks import TaskItem
 
 
 class TaskRepository(RepositoryABC):

@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from settings import Settings
+from app.settings import Settings
 
 
-class LLMServiceABC(ABC):
+class LLMClientABC(ABC):
     def __init__(self, settings: Settings):
         self.settings = settings
 

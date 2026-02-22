@@ -30,6 +30,7 @@ def upgrade() -> None:
     sa.Column('category', sa.VARCHAR(), autoincrement=False, nullable=True),
     sa.Column('estimated_minutes', sa.INTEGER(), autoincrement=False, nullable=True),
     sa.Column('ai_analyzed', postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
+    sa.Column('scheduled_for', postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('tasks_pkey'))
     )
     # ### end Alembic commands ###

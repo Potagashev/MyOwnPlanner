@@ -1,24 +1,16 @@
 import os
-import asyncio
 import logging
 
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher, Router
-from database import init_db
-from di.di_container import DI
+from aiogram import Bot, Dispatcher
 
-from bot.handlers import router as tasks_router
+from app.bot.handlers import router as tasks_router
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-di = DI()
-di.init()
-
-
-
-async def main():
+async def run_bot():
     load_dotenv()
 
     BOT_TOKEN = os.getenv('BOT_TOKEN')
@@ -33,7 +25,3 @@ async def main():
 
     logger.info("Бот запускается...")
     await dp.start_polling(bot)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
